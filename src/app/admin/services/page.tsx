@@ -3,13 +3,14 @@ import { fr } from "@/i18n/fr";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 import { guard } from "@/lib/guard";
+import { can } from "@/lib/permissions";
 
 export default async function ServicesAdmin() {
-  await guard("services.write");
+  const user = await guard("services.write");
   const requests = await db.serviceRequest.findMany({ orderBy: { createdAt: "desc" }, take: 100 });
   return (
     <div>
-      <div className="kicker"><h1>Services</h1><a className="btn-ghost" href="/api/admin/export?type=services">Exporter</a></div>
+      <div className="kicker"><h1>Services</h1>{can(user.role, "export") ? <a className="btn-ghost" href="/api/admin/export?type=services">Exporter</a> : null}</div>
       <div className="table-wrap">
         <table>
           <thead><tr><th>Référence</th><th>Type</th><th>Lieu</th><th>Urgence</th><th>État</th></tr></thead>

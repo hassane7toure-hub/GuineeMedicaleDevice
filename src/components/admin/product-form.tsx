@@ -71,6 +71,7 @@ export function ProductForm({
   const audience = value.audience.split(",");
   const usage = value.usage.split(",");
   return (
+    <>
     <form action={saveProduct} className="fields">
       <input type="hidden" name="id" value={value.id} />
       <div className="fields cols-2">
@@ -118,7 +119,7 @@ export function ProductForm({
       <label className="check"><input type="checkbox" name="allowQuote" value="oui" defaultChecked={value.allowQuote} />Autoriser le devis</label>
       <label className="check"><input type="checkbox" name="allowQuestion" value="oui" defaultChecked={value.allowQuestion} />Autoriser la question technique</label>
       <label className="field">Photo JPEG, PNG ou WebP, 2 Mo<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label>
-      <label className="field">Texte alternatif de la photo<input name="imageAlt" /></label>
+      <label className="field">Texte alternatif de la photo, facultatif<input name="imageAlt" placeholder="Si vide, le nom du produit est utilisé" /></label>
       <label className="field">Document PDF ou image<input name="document" type="file" accept="application/pdf,image/png,image/jpeg,image/webp" /></label>
       <label className="field">Titre du document<input name="documentTitle" /></label>
       <label className="check"><input type="checkbox" name="documentAuthorized" value="oui" />J'ai le droit de publier ce document</label>
@@ -137,12 +138,16 @@ export function ProductForm({
       {value.id ? (
         <button className="btn-danger" formAction={archiveProduct} type="submit">Retirer de la boutique</button>
       ) : null}
-      {value.images.map((image) => (
-        <button key={image.id} className="btn-ghost" formAction={detachImage} name="imageId" value={image.id} type="submit">
+    </form>
+    {value.images.map((image) => (
+      <form key={image.id} action={detachImage}>
+        <input type="hidden" name="imageId" value={image.id} />
+        <button className="btn-ghost" type="submit">
           Retirer la liaison de l'image « {image.alt} » (le fichier n'est pas supprimé)
         </button>
-      ))}
-    </form>
+      </form>
+    ))}
+    </>
   );
 }
 

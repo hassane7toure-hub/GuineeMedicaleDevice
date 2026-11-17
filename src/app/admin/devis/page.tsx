@@ -3,13 +3,14 @@ import { fr } from "@/i18n/fr";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 import { guard } from "@/lib/guard";
+import { can } from "@/lib/permissions";
 
 export default async function QuotesAdmin() {
-  await guard("quotes.write");
+  const user = await guard("quotes.write");
   const quotes = await db.quoteRequest.findMany({ orderBy: { createdAt: "desc" }, take: 100 });
   return (
     <div>
-      <div className="kicker"><h1>Devis</h1><a className="btn-ghost" href="/api/admin/export?type=quotes">Exporter</a></div>
+      <div className="kicker"><h1>Devis</h1>{can(user.role, "export") ? <a className="btn-ghost" href="/api/admin/export?type=quotes">Exporter</a> : null}</div>
       <div className="table-wrap">
         <table>
           <thead><tr><th>Référence</th><th>Organisation</th><th>Ville</th><th>État</th></tr></thead>

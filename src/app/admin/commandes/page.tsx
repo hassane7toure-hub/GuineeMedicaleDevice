@@ -4,9 +4,10 @@ import { fr } from "@/i18n/fr";
 import { db } from "@/lib/db";
 import { formatDate, formatGnf } from "@/lib/format";
 import { guard } from "@/lib/guard";
+import { can } from "@/lib/permissions";
 
 export default async function OrdersAdmin({ searchParams }: { searchParams: Promise<{ ok?: string; erreur?: string }> }) {
-  await guard("orders.read");
+  const user = await guard("orders.read");
   const query = await searchParams;
   const orders = await db.order.findMany({
     orderBy: { createdAt: "desc" },
@@ -15,7 +16,7 @@ export default async function OrdersAdmin({ searchParams }: { searchParams: Prom
   });
   return (
     <div>
-      <div className="kicker"><h1>Commandes</h1><a className="btn-ghost" href="/api/admin/export?type=orders">Exporter</a></div>
+      <div className="kicker"><h1>Commandes</h1>{can(user.role, "export") ? <a className="btn-ghost" href="/api/admin/export?type=orders">Exporter</a> : null}</div>
       <Flash ok={query.ok} erreur={query.erreur} />
       <div className="table-wrap">
         <table>

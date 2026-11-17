@@ -23,6 +23,12 @@ function checked(formData: FormData, key: string) {
   return formData.get(key) === "oui";
 }
 
+function uploadErrorCode(error: unknown, kind: "photo" | "document") {
+  const message = error instanceof Error ? error.message : "";
+  if (/lourde|lourd/i.test(message)) return `${kind}-taille`;
+  return `${kind}-format`;
+}
+
 export async function saveProduct(formData: FormData) {
   const user = await guard("catalog.write");
   const id = text(formData, "id", 40);
@@ -79,22 +85,30 @@ export async function saveProduct(formData: FormData) {
     : await db.product.create({ data });
   const image = formData.get("image");
   if (image instanceof File && image.size > 0) {
-    const saved = await savePublicImage(image, text(formData, "imageAlt", 180));
-    if (saved) await db.productImage.create({ data: { productId: product.id, url: saved.url, alt: saved.alt } });
+    try {
+      const saved = await savePublicImage(image, text(formData, "imageAlt", 180) || name);
+      if (saved) await db.productImage.create({ data: { productId: product.id, url: saved.url, alt: saved.alt } });
+    } catch (error) {
+      redirect(`/admin/produits/${product.id}?erreur=${uploadErrorCode(error, "photo")}`);
+    }
   }
   const document = formData.get("document");
   if (document instanceof File && document.size > 0) {
-    const saved = await savePrivateFile(document);
-    if (saved) {
-      await db.productDocument.create({
-        data: {
-          productId: product.id,
-          title: text(formData, "documentTitle", 160) || saved.originalName,
-          storedName: saved.storedName,
-          mime: saved.mime,
-          authorized: checked(formData, "documentAuthorized"),
-        },
-      });
+    try {
+      const saved = await savePrivateFile(document);
+      if (saved) {
+        await db.productDocument.create({
+          data: {
+            productId: product.id,
+            title: text(formData, "documentTitle", 160) || saved.originalName,
+            storedName: saved.storedName,
+            mime: saved.mime,
+            authorized: checked(formData, "documentAuthorized"),
+          },
+        });
+      }
+    } catch (error) {
+      redirect(`/admin/produits/${product.id}?erreur=${uploadErrorCode(error, "document")}`);
     }
   }
   await audit({ userId: user.id, action: id ? "product.update" : "product.create", entity: "product", entityId: product.id });

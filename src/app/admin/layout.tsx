@@ -9,7 +9,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!isStaff(user.role)) redirect("/compte");
   return (
     <section className="section wrap admin-shell">
-      <AdminNav />
+      <AdminNav role={user.role} />
       <div>
         <p className="meta">{user.name} · {user.role}</p>
         {children}

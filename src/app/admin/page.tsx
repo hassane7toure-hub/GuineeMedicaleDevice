@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { Flash } from "@/components/admin/nav";
+import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { can } from "@/lib/permissions";
 import { cinetpayBlockers, cinetpayConfigured, paymentMode } from "@/lib/payments/provider";
 import { getSettings } from "@/lib/settings";
 import { deactivateDemoCatalog } from "@/server/admin-actions";
 
 export default async function AdminHome({ searchParams }: { searchParams: Promise<{ ok?: string; erreur?: string }> }) {
   const query = await searchParams;
+  const user = await currentUser();
+  const role = user?.role ?? "";
   const [settings, products, orders, quotes, services, pages, notifications] = await Promise.all([
     getSettings(),
     db.product.count({ where: { active: true, isDemo: false } }),
@@ -46,10 +50,12 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
         ))}
       </ul>
       <p className="warn">Prestataire : {paymentMode() === "test" ? "mode test, aucun débit." : "mode live."} {cinetpayConfigured() ? "CinetPay est configuré en GNF." : cinetpayBlockers().join(" ")}</p>
-      <form action={deactivateDemoCatalog}>
-        <button className="btn-ghost" type="submit">Retirer les produits de démonstration du catalogue public</button>
-      </form>
-      <p><Link href="/admin/reglages">Compléter les coordonnées</Link></p>
+      {can(role, "catalog.write") ? (
+        <form action={deactivateDemoCatalog}>
+          <button className="btn-ghost" type="submit">Retirer les produits de démonstration du catalogue public</button>
+        </form>
+      ) : null}
+      {can(role, "settings.write") ? <p><Link href="/admin/reglages">Compléter les coordonnées</Link></p> : null}
     </div>
   );
 }
