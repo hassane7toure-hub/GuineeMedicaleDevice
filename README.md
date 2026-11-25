@@ -1,4 +1,4 @@
-# Guinea Medical Device
+# GUINEA MEDICAL DEVICE SHOP - SARL
 
 Boutique en français pour la vente, l'installation, la maintenance et le conseil en équipements médicaux, pensée pour la République de Guinée. Les prix sont en francs guinéens. Les coordonnées, stocks, garanties et paiements réels ne sont pas inventés : ils se configurent, et le catalogue livré est marqué comme démonstration.
 

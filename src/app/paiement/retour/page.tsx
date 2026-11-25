@@ -14,7 +14,7 @@ export default async function PaymentReturnPage({ searchParams }: { searchParams
     <section className="section wrap">
       <header className="page-intro">
         <h1>Retour de paiement</h1>
-        <p className="lede">Cette page n'enregistre pas un paiement. Seule la vérification serveur, en particulier la notification du prestataire, peut confirmer un règlement.</p>
+        <p className="lede">Cette page n'enregistre pas un paiement. Le site ne propose pas de paiement en ligne. Le règlement hors ligne est confirmé par l'équipe.</p>
       </header>
       {allowed ? (
         <>

@@ -11,13 +11,9 @@ import { notifyTeam } from "@/lib/mail";
 import { issueOrderProforma, issueQuoteProforma } from "@/lib/proforma";
 import { canAccessOrder, grantOrderAccess, setNotice } from "@/lib/notice";
 import { can } from "@/lib/permissions";
-import { applyVerified } from "@/lib/payments/apply";
-import { createCinetPayCheckout, ProviderUnavailable } from "@/lib/payments/cinetpay";
 import { availableMethods } from "@/lib/payments/methods";
-import { sandboxTokenValid, signSandbox } from "@/lib/payments/provider";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { nextReference } from "@/lib/references";
-import { siteUrl } from "@/lib/site";
 import { savePrivateFile } from "@/lib/uploads";
 import { checkoutSchema, contactSchema, fieldErrors, formTiming, privacySchema, quoteSchema, registerSchema, serviceSchema } from "@/lib/validators";
 
@@ -351,8 +347,8 @@ export async function startPayment(formData: FormData) {
     (await canAccessOrder(reference));
   if (!allowed) redirect("/commande/suivi");
   const method = (await availableMethods()).find((item) => item.id === methodId);
-  if (!method) redirect(`/commande/${reference}?erreur=moyen`);
-  const payment = await db.payment.create({
+  if (!method || method.provider !== "offline") redirect(`/commande/${reference}?erreur=moyen`);
+  await db.payment.create({
     data: {
       orderId: order.id,
       status: "PENDING",
@@ -362,69 +358,17 @@ export async function startPayment(formData: FormData) {
       idempotencyKey: `${order.id}:${order.payments.length + 1}`,
     },
   });
-  if (method.provider === "offline") {
-    await notifyTeam({
-      subject: `Règlement hors ligne à confirmer · ${reference}`,
-      body: `Commande ${reference}. Aucun encaissement en ligne n'a été réalisé.`,
-      relatedType: "order",
-      relatedId: order.id,
-    });
-    redirect(`/commande/${reference}?info=hors-ligne`);
-  }
-  if (method.provider === "sandbox") {
-    redirect(`/paiement/sandbox/${payment.id}?token=${signSandbox(payment.id)}`);
-  }
-  try {
-    const checkout = await createCinetPayCheckout({
-      paymentId: payment.id,
-      orderReference: reference,
-      amountGnf: Number(order.totalGnf),
-      customerName: order.customerName,
-      customerEmail: order.email,
-      customerPhone: order.phone,
-      description: `Commande ${reference}`,
-      returnUrl: `${siteUrl()}/paiement/retour?reference=${reference}`,
-      notifyUrl: `${siteUrl()}/api/paiements/notification/cinetpay`,
-    });
-    await db.payment.update({
-      where: { id: payment.id },
-      data: { checkoutUrl: checkout.redirectUrl, providerRef: checkout.providerRef },
-    });
-    redirect(checkout.redirectUrl);
-  } catch (error) {
-    const message = error instanceof ProviderUnavailable ? error.message : error instanceof Error ? error.message : "Paiement indisponible";
-    await applyVerified({
-      paymentId: payment.id,
-      provider: "cinetpay",
-      providerRef: payment.id,
-      providerEventId: `cinetpay:${payment.id}:init-failed`,
-      status: "FAILED",
-      payload: JSON.stringify({ note: message }),
-    });
-    redirect(`/commande/${reference}?erreur=prestataire`);
-  }
+  await notifyTeam({
+    subject: `Règlement hors ligne à confirmer · ${reference}`,
+    body: `Commande ${reference}. Aucun encaissement en ligne n'a été réalisé.`,
+    relatedType: "order",
+    relatedId: order.id,
+  });
+  redirect(`/commande/${reference}?info=hors-ligne`);
 }
 
-export async function simulatePayment(formData: FormData) {
-  if (process.env.PAYMENT_MODE === "live") redirect("/");
-  const paymentId = String(formData.get("paymentId") || "");
-  const token = String(formData.get("token") || "");
-  const outcome = String(formData.get("outcome") || "");
-  if (!sandboxTokenValid(paymentId, token)) redirect("/");
-  const payment = await db.payment.findUnique({ where: { id: paymentId }, include: { order: true } });
-  if (!payment || payment.provider !== "sandbox") redirect("/");
-  const status = outcome === "paid" ? "PAID" : outcome === "failed" ? "FAILED" : outcome === "cancelled" ? "CANCELLED" : "REVIEW";
-  const method = payment.method === "SANDBOX_VISA" ? "VISA_SIMULATION" : "ORANGE_MONEY_SIMULATION";
-  await applyVerified({
-    paymentId,
-    provider: "sandbox",
-    providerRef: paymentId,
-    providerEventId: `sandbox:${paymentId}:${status}`,
-    status,
-    method,
-    payload: JSON.stringify({ outcome, mode: "test" }),
-  });
-  redirect(`/commande/${payment.order.reference}`);
+export async function simulatePayment() {
+  redirect("/commande/suivi");
 }
 
 export async function lookupOrder(_state: ActionState, formData: FormData): Promise<ActionState> {

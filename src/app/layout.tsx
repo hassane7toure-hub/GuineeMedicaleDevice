@@ -13,12 +13,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   return {
     metadataBase: new URL(siteUrl()),
-    title: { default: `${settings.companyName} · Équipements médicaux en Guinée`, template: `%s · ${settings.companyName}` },
+    title: { default: `${settings.legalName || settings.companyName} · Équipements médicaux en Guinée`, template: `%s · ${settings.legalName || settings.companyName}` },
     description: settings.intro.slice(0, 180),
-    applicationName: settings.companyName,
+    applicationName: settings.legalName || settings.companyName,
     robots: settings.demoMode ? { index: false, follow: false } : { index: true, follow: true },
     icons: { icon: "/brand/logo.png" },
-    openGraph: { locale: "fr_GN", siteName: settings.companyName, type: "website" },
+    openGraph: { locale: "fr_GN", siteName: settings.legalName || settings.companyName, type: "website" },
   };
 }
 

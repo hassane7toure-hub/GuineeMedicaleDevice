@@ -28,7 +28,7 @@ export default async function CheckoutPage() {
     <section className="section wrap">
       <header className="page-intro">
         <h1>Commande</h1>
-        <p className="lede">Vous pouvez commander sans compte. Le paiement n'est lancé qu'après le récapitulatif. Aucune carte ni code Mobile Money n'est saisi sur cette page.</p>
+        <p className="lede">Vous pouvez commander sans compte. Le règlement se fait hors ligne ou sur facture. Aucun paiement en ligne n'est proposé. La validation de la commande vaut prise de connaissance des <Link href="/conditions-generales">conditions générales de vente</Link>.</p>
       </header>
       {methods.length === 0 ? (
         <p className="warn">Aucun mode de règlement n'est activé. <Link href="/devis">Demandez un devis</Link> ou faites activer un mode dans l'administration.</p>
@@ -55,7 +55,7 @@ export default async function CheckoutPage() {
               ))}
             </ul>
             <PriceTag amount={subtotal} />
-            <p className="muted">Le total définitif, frais connus inclus, apparaît sur le récapitulatif avant paiement.</p>
+            <p className="muted">Le total définitif, frais connus inclus, apparaît sur le récapitulatif.</p>
           </aside>
         </div>
       )}

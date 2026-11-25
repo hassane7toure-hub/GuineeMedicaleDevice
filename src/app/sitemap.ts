@@ -9,7 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const settings = await getSettings();
   if (settings.demoMode) return [];
   const base = siteUrl();
-  const staticPaths = ["", "/boutique", "/services", "/devis", "/a-propos", "/contact", "/faq", "/livraison", "/garantie", "/retours", "/confidentialite", "/mentions-legales"];
+  const staticPaths = ["", "/boutique", "/services", "/devis", "/a-propos", "/contact", "/faq", "/livraison", "/garantie", "/retours", "/confidentialite", "/conditions-generales", "/mentions-legales"];
   const products = await db.product.findMany({ where: { active: true, isDemo: false }, select: { slug: true, updatedAt: true } });
   return [
     ...staticPaths.map((path) => ({ url: `${base}${path || "/"}`, changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.7 })),

@@ -36,6 +36,7 @@ if (process.env.ENFORCE_HTTPS === "true") {
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   output: "standalone",
+  serverExternalPackages: ["exceljs"],
   turbopack: {
     root: process.cwd(),
   },

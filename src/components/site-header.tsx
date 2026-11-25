@@ -22,7 +22,7 @@ export async function SiteHeader() {
       </div>
       <div className="header-inner">
         <Link href="/" className="brand">
-          <Image src="/brand/wordmark.png" alt="Guinea Medical Device" width={1740} height={320} priority />
+          <Image src="/brand/wordmark.png" alt={settings.legalName || settings.companyName} width={1740} height={320} priority />
         </Link>
         <nav className="desktop-nav" aria-label="Navigation principale">
           <Link href="/boutique">{fr.nav.shop}</Link>

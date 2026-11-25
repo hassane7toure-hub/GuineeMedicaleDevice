@@ -429,119 +429,153 @@ const pages = [
   {
     slug: "faq",
     title: "Questions fréquentes",
-    description: "Réponses de travail sur les devis, les prix, le paiement et les services.",
-    body: `## Les prix affichés sont-ils définitifs ?
-Non. Les prix de démonstration sont non contractuels. Un prix publié, lorsqu'il existe, peut être modifié tant que la commande n'est pas confirmée. Les produits sans prix passent par un devis.
+    description: "Commande, devis, disponibilité, livraison, installation, garantie et assistance.",
+    body: `## Comment passer une commande ?
+Sélectionnez le produit, indiquez la quantité et suivez les étapes de commande. Si le site ne permet pas de finaliser l'achat, contactez l'équipe pour obtenir un devis ou confirmer la disponibilité.
 
-## Comment demander un devis ?
-Utilisez la page Devis, choisissez éventuellement des produits et décrivez le besoin. Une référence est alors créée. Elle ne vaut pas acceptation.
+## Puis-je demander un devis pour un établissement de santé ?
+Oui. Les hôpitaux, cliniques, cabinets, laboratoires, ONG et autres organisations peuvent demander un devis en précisant les références, les quantités, la destination et les besoins éventuels d'installation.
 
-## Le paiement en ligne fonctionne-t-il déjà ?
-Pas tant que l'entreprise n'a pas un contrat marchand actif. En mode test, les paiements sont simulés et aucun débit n'a lieu. Le paiement hors ligne reste en attente de vérification humaine.
+## Les produits sont-ils disponibles immédiatement ?
+La disponibilité est indiquée sur la fiche produit lorsqu'elle est connue. Pour les équipements sur commande ou les grandes quantités, l'équipe confirme le délai après vérification.
 
-## Livrez-vous partout en Guinée ?
-Seules les options activées dans l'administration sont proposées. Les exemples de zones sont à remplacer. Un frais marqué « à confirmer » n'est pas un prix.
+## Livrez-vous en dehors de Conakry ?
+La livraison peut être organisée dans les autres villes et régions selon la destination, le produit et les possibilités logistiques. Les frais et les délais sont confirmés avant la commande.
 
-## L'installation est-elle incluse ?
-Seulement si elle est choisie et chiffrée. La fiche produit indique les besoins connus, sans garantir une installation.
+## Proposez-vous l'installation et la formation ?
+Pour certains équipements, l'installation, la mise en service ou la formation peuvent être proposées. Leur disponibilité et leur coût sont précisés dans le devis.
 
-## Que signifie « urgent » ?
-C'est votre indication de priorité. Ce n'est pas un délai d'intervention garanti.`,
+## Comment bénéficier de la garantie ?
+Contactez le service client avec la preuve d'achat, la référence du produit et une description du problème. Une vérification pourra être réalisée conformément aux conditions du fabricant.
+
+## Puis-je retourner un produit ?
+Les retours sont examinés selon la politique de retour, l'état du produit, son type et les conditions applicables. Contactez le service client avant tout renvoi.
+
+## Comment obtenir une assistance technique ?
+Indiquez la marque, la référence, le numéro de série si vous l'avez, le problème constaté et vos coordonnées.
+
+## Les produits sont-ils destinés à un usage professionnel ?
+Chaque fiche produit indique sa destination et ses caractéristiques. Le client vérifie que le produit correspond à son besoin et à l'usage prévu.`,
   },
   {
     slug: "livraison",
     title: "Livraison et installation",
-    description: "Principes de remise, à compléter avec les zones et frais réels.",
-    body: `## Ce qui est déjà prévu
-La commande permet de choisir une livraison, un retrait ou une installation parmi les options activées. Les frais connus sont ajoutés au total. Les frais « à confirmer » restent hors total.
+    description: "Livraison à Conakry et dans les autres zones de Guinée, installation et réception.",
+    body: `## Livraison
+GUINEA MEDICAL DEVICE SHOP - SARL livre à Conakry et dans les autres zones de Guinée selon la couverture logistique disponible. Le délai estimatif, le coût et les éventuelles contraintes d'accès sont confirmés avant la validation de la commande. Les délais peuvent varier selon la disponibilité du produit, la destination, les formalités et les conditions de transport.
 
-## À compléter
-- [À COMPLÉTER] zones réellement desservies
-- [À COMPLÉTER] frais par zone
-- [À COMPLÉTER] lieu de retrait
-- [À COMPLÉTER] conditions d'accès pour l'installation, y compris les étages et l'alimentation électrique
-- [À COMPLÉTER] délais que l'entreprise accepte de garantir
+## Installation et mise en service
+Certains équipements nécessitent une installation, un paramétrage, une vérification ou une formation à l'utilisation. Ces prestations sont proposées lorsqu'elles sont disponibles. Elles font l'objet d'un devis qui précise le périmètre, les prérequis du site, les frais et le calendrier. Le client s'assure que le lieu d'installation dispose des conditions nécessaires : alimentation électrique, espace, sécurité, accès, réseau ou autres prérequis indiqués.
 
-Les délais indicatifs des fiches ne sont pas des engagements.`,
+## Réception
+À la livraison, le client vérifie le colis, le produit, les accessoires et les documents remis. Toute réserve relative à un dommage visible, un article manquant ou une erreur de référence est signalée au livreur et au service client dans les meilleurs délais.`,
   },
   {
     slug: "garantie",
     title: "Garantie",
-    description: "Cadre à faire valider. Aucune durée de garantie n'est promise par défaut.",
-    body: `## Principe
-Une garantie n'existe que si elle est écrite sur la fiche validée, le devis accepté ou la commande. Le texte « à confirmer » ne crée pas de garantie.
+    description: "Garantie fabricant, exclusions et démarche de demande. La durée se renseigne sur chaque fiche.",
+    body: `Les équipements et dispositifs vendus bénéficient de la garantie fabricant lorsqu'elle est prévue, selon la durée, les conditions et les exclusions indiquées dans la fiche produit, le certificat de garantie ou les documents remis à l'achat. GUINEA MEDICAL DEVICE SHOP - SARL accompagne le client dans la prise en charge des demandes de garantie.
 
-## À compléter
-- [À COMPLÉTER] durées par famille de produits
-- [À COMPLÉTER] ce qui est couvert et exclu
-- [À COMPLÉTER] prise en charge de la main-d'œuvre et des pièces
-- [À COMPLÉTER] démarche en cas de panne
+## Ce que la garantie ne couvre généralement pas
+La garantie ne couvre généralement pas les dommages liés à une mauvaise utilisation, une installation non conforme, une modification non autorisée, un entretien insuffisant, une usure normale, un accident ou l'utilisation de consommables et d'accessoires non recommandés par le fabricant, sous réserve des droits impératifs du client.
 
-Ce texte doit être relu avant publication.`,
+## Ouvrir une demande
+Le client fournit la référence du produit, la preuve d'achat, une description du défaut et, si possible, des photos ou des vidéos. Le produit peut être soumis à un diagnostic avant décision.
+
+## Fiche produit
+Les conditions de garantie propres à chaque produit prévalent lorsqu'elles sont plus précises et compatibles avec les règles applicables. La durée et les modalités sont renseignées sur la fiche avant publication.`,
   },
   {
     slug: "retours",
     title: "Retours",
-    description: "Politique de retour à rédiger et à faire valider.",
-    body: `## État actuel
-Aucune politique de retour n'est encore adoptée. Passer commande ne signifie pas qu'un retour est possible.
+    description: "Demande de retour, conditions d'acceptation, produits restreints et remboursement.",
+    body: `Toute demande de retour est adressée au service client avant l'expédition ou le dépôt du produit. Le client indique le numéro de commande, la référence, le motif du retour et joint, si possible, des photos.
 
-## À compléter
-- [À COMPLÉTER] délais éventuels
-- [À COMPLÉTER] produits exclus, notamment consommables ouverts
-- [À COMPLÉTER] état exigé et frais de retour
-- [À COMPLÉTER] modalité de remboursement
+## Conditions d'acceptation
+Sous réserve des droits légaux du client, un retour peut être accepté lorsque le produit n'est pas utilisé, qu'il est complet, dans son emballage d'origine, accompagné de ses accessoires et de ses documents, et qu'il peut être remis en vente dans des conditions appropriées. Une inspection peut être effectuée à la réception.
 
-Les équipements installés ou personnalisés devront faire l'objet d'une règle explicite.`,
+## Produits soumis à restriction
+Pour des raisons de sécurité, d'hygiène, de traçabilité ou de protection des patients, certains produits peuvent être exclus du retour ou soumis à des conditions particulières. Il s'agit notamment des consommables, des produits stériles, des articles dont l'emballage de protection a été ouvert, des produits personnalisés, des produits commandés spécialement et des équipements déjà installés ou utilisés. Ces restrictions sont précisées par catégorie de produit. Elles ne limitent pas les droits impératifs du client.
+
+## Produit défectueux, endommagé ou non conforme
+En cas de produit endommagé à la livraison, défectueux ou différent de la commande, le client contacte rapidement le service client et conserve le produit, son emballage et les éléments de preuve. Après vérification, une solution peut être proposée : remplacement, réparation, remboursement, avoir ou autre prise en charge conforme aux règles applicables.
+
+## Frais et remboursement
+Les frais de retour, les modalités de remboursement et les délais de traitement sont communiqués au client avant la validation de la procédure, selon le motif du retour et les conditions applicables. Aucun retour n'est expédié sans instruction préalable du service client.
+
+## Contact
+Téléphone : +224 622 32 58 88
+WhatsApp : +224 628 00 09 02
+E-mail : guineamedshop2026@gmail.com
+Quartier Concasseur, commune de Gbessia`,
   },
   {
     slug: "confidentialite",
     title: "Confidentialité",
-    description: "Information sur les données collectées pour les commandes et les demandes.",
-    body: `## Responsable
-Guinea Medical Device Shop SARL
-Quartier Concasseur, commune de Gbessia, République de Guinée
-Téléphone et WhatsApp : +224 622 32 58 88 et +224 628 00 09 02
-E-mail : guineamedshop2026@gmail.com
-L'affiche écrit « GUINEA MEDICAL DIVICE SHOP - SARL ». L'immatriculation reste à confirmer.
+    description: "Utilisation des informations de devis, de commande, de livraison et de service client.",
+    body: `GUINEA MEDICAL DEVICE SHOP - SARL accorde une importance particulière à la confidentialité des informations communiquées par ses clients. Les données recueillies lors d'une demande de devis, d'une commande, d'une livraison ou d'un échange avec le service client sont utilisées pour traiter les demandes, assurer le suivi commercial, gérer les règlements, organiser la livraison et améliorer les services.
 
-## Données utilisées
-Le site demande les informations utiles pour répondre : nom, organisation, fonction, téléphone, e-mail, ville, besoin, et les pièces que vous joignez. Une commande ajoute l'adresse de remise.
+## Accès aux informations
+Les informations sont accessibles uniquement aux personnes et aux prestataires qui en ont besoin pour accomplir ces opérations. Elles ne sont pas vendues à des tiers. Elles peuvent être communiquées aux partenaires qui interviennent dans le traitement de la commande, notamment les transporteurs et les techniciens d'installation, dans la limite des informations nécessaires.
 
-## Ce qui n'est pas collecté
-Les numéros de carte et les codes secrets Mobile Money ne sont pas saisis sur ce site. Le paiement en ligne, lorsqu'il sera activé, se fera sur la page du prestataire.
-
-## Finalités
-Traiter les devis, commandes, demandes de service et messages. Tenir la facturation et le suivi technique. Répondre aux demandes d'accès, de correction ou de suppression.
-
-## Durée
-[À COMPLÉTER] durées de conservation, à définir selon les obligations comptables et les garanties.
-
-## Destinataires
-L'équipe autorisée de l'entreprise. Le prestataire de paiement, uniquement quand un paiement en ligne est lancé. L'hébergeur. [À COMPLÉTER] autres sous-traitants.
+## Ce qui n'est pas demandé
+Le site ne propose pas de paiement en ligne. Les numéros de carte et les codes secrets Mobile Money ne sont pas demandés.
 
 ## Vos demandes
-Le formulaire de cette page permet de demander un accès, une correction ou une suppression. [À COMPLÉTER] base légale et délai de réponse après validation juridique.`,
+Le client peut demander l'accès, la correction ou la mise à jour de ses informations, ainsi que poser toute question relative à leur utilisation.
+E-mail : guineamedshop2026@gmail.com
+Téléphone : +224 622 32 58 88
+WhatsApp : +224 628 00 09 02
+Quartier Concasseur, commune de Gbessia
+Le formulaire de cette page sert aussi à demander un accès, une correction ou une suppression. La durée de conservation est déterminée selon la finalité du traitement et les obligations applicables.
+
+## Cookies
+Le site peut utiliser des cookies ou des technologies similaires pour assurer son fonctionnement, mesurer l'audience ou améliorer l'expérience de navigation. Les paramètres de consentement et de navigation sont présentés, lorsque cela est requis, dans une interface dédiée.`,
+  },
+  {
+    slug: "conditions-generales",
+    title: "Conditions générales de vente",
+    description: "Modalités de vente, de prix, de commande, de livraison et de réclamation.",
+    body: `Les présentes Conditions Générales de Vente (CGV) définissent les modalités selon lesquelles GUINEA MEDICAL DEVICE SHOP - SARL (ci-après « le Vendeur ») propose et vend ses produits et services aux clients particuliers, professionnels de santé, établissements sanitaires, entreprises et organisations.
+
+## 1.1. Produits et disponibilité
+Les produits présentés sur le site sont décrits avec leurs caractéristiques essentielles, leur référence et, lorsqu'elle est connue, leur disponibilité. Les photographies sont illustratives et peuvent présenter de légères différences avec le produit livré. Une commande est confirmée sous réserve de disponibilité et de validation du paiement ou des conditions de règlement convenues.
+
+## 1.2. Prix et paiement
+Les prix sont indiqués en GNF. Ils précisent, le cas échéant, les taxes, les frais de livraison, les frais d'installation ou les autres coûts applicables. Le montant final est communiqué au client avant la validation de la commande. Les moyens de règlement acceptés sont ceux affichés sur le site ou ceux confirmés par le service commercial. Le site ne propose pas de paiement en ligne.
+
+## 1.3. Commande
+Le client vérifie les références, les quantités, les caractéristiques, les coordonnées et les modalités de livraison avant de confirmer sa commande. Un accusé de réception ne constitue pas nécessairement une confirmation définitive de disponibilité. Le Vendeur peut contacter le client pour clarifier une information ou proposer une solution en cas d'indisponibilité.
+
+## 1.4. Livraison, installation et réception
+Les délais et les frais de livraison sont communiqués lors de la commande ou dans le devis. Pour les équipements qui nécessitent une installation, celle-ci est réalisée selon les modalités convenues au devis. À la réception, le client vérifie l'état apparent, les accessoires et les références, puis signale rapidement toute anomalie.
+
+## 1.5. Réclamations et responsabilité
+Toute réclamation peut être adressée au service client aux coordonnées indiquées sur le site. Le Vendeur examine les demandes et propose, selon le cas, une réparation, un remplacement, un avoir, un remboursement ou une autre solution prévue par les conditions applicables. Les produits sont utilisés conformément à leur notice, à leur destination et aux recommandations du fabricant.
+
+## 1.6. Acceptation
+La validation d'une commande implique la prise de connaissance des CGV et leur acceptation, sous réserve des dispositions impératives applicables. Les CGV en vigueur au moment de la commande sont celles qui s'appliquent à cette transaction.`,
   },
   {
     slug: "mentions-legales",
     title: "Mentions légales",
-    description: "Mentions à compléter avant publication.",
+    description: "Éditeur, activité et responsable de la publication. Le RCCM et le NIF restent à compléter.",
     body: `## Éditeur
-Guinea Medical Device Shop SARL
-Quartier Concasseur, commune de Gbessia, République de Guinée
-Téléphone et WhatsApp : +224 622 32 58 88 et +224 628 00 09 02
-E-mail : guineamedshop2026@gmail.com
-[À COMPLÉTER] forme, capital, RCCM, NIF.
-[À COMPLÉTER] directeur de la publication.
+- Dénomination : GUINEA MEDICAL DEVICE SHOP - SARL
+- Nom commercial : Guinée Medical Device Shop
+- Forme juridique : SARL
+- Activité : vente, installation et maintenance d'équipements médicaux et de leurs consommables. Vente et distribution d'équipements, de dispositifs médicaux, de consommables et d'accessoires, selon le catalogue effectivement proposé.
+- Adresse du siège : Quartier Concasseur, commune de Gbessia
+- Téléphone : +224 622 32 58 88
+- WhatsApp : +224 628 00 09 02
+- E-mail : guineamedshop2026@gmail.com
+- Responsable de la publication : Alhassane TOURE
+- RCCM / NIF : [à compléter]
 
-L'affiche écrit « GUINEA MEDICAL DIVICE SHOP - SARL ». Cette orthographe et l'immatriculation sont à confirmer.
+Les informations relatives aux autorisations, aux enregistrements, à la conformité des produits et aux obligations applicables à la commercialisation de dispositifs médicaux sont à vérifier et à ajouter selon la réglementation guinéenne et les catégories de produits vendus.
 
 ## Hébergement
-[À COMPLÉTER] nom et adresse de l'hébergeur.
-
-## Propriété
-[À COMPLÉTER] règles d'usage des textes, du logo et des photographies.`,
+[à compléter] nom et adresse de l'hébergeur.`,
   },
 ];
 
@@ -635,7 +669,7 @@ async function main() {
   for (const page of pages) {
     await db.pageContent.upsert({
       where: { slug_locale: { slug: page.slug, locale: "fr" } },
-      create: { ...page, locale: "fr", needsReview: true },
+      create: { ...page, locale: "fr", needsReview: page.slug === "mentions-legales" },
       update: {},
     });
   }

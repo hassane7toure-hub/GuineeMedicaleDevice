@@ -3,7 +3,6 @@ import { Flash } from "@/components/admin/nav";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { can } from "@/lib/permissions";
-import { cinetpayBlockers, cinetpayConfigured, paymentMode } from "@/lib/payments/provider";
 import { getSettings } from "@/lib/settings";
 import { deactivateDemoCatalog } from "@/server/admin-actions";
 
@@ -29,7 +28,7 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
     [settings.interventionAreas, "Zones d'intervention"],
     [products > 0 ? "ok" : "", "Au moins un produit réel, hors démonstration"],
     [!settings.demoMode ? "ok" : "", "Mode démonstration désactivé"],
-    [paymentMode() === "live" && cinetpayConfigured() ? "ok" : "", "Paiement en ligne live et configuré en GNF"],
+    [settings.payments.offline ? "ok" : "", "Règlement hors ligne proposé"],
     [process.env.SMTP_HOST ? "ok" : "", "Messagerie SMTP"],
     [pages === 0 ? "ok" : "", "Pages juridiques relues"],
   ];
@@ -49,7 +48,7 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
           <li key={label}>{ok ? "Prêt" : "À fournir"} — {label}</li>
         ))}
       </ul>
-      <p className="warn">Prestataire : {paymentMode() === "test" ? "mode test, aucun débit." : "mode live."} {cinetpayConfigured() ? "CinetPay est configuré en GNF." : cinetpayBlockers().join(" ")}</p>
+      <p className="warn">Le paiement en ligne n'est pas proposé. Une commande reste en attente jusqu'à l'enregistrement du règlement hors ligne.</p>
       {can(role, "catalog.write") ? (
         <form action={deactivateDemoCatalog}>
           <button className="btn-ghost" type="submit">Retirer les produits de démonstration du catalogue public</button>

@@ -2,7 +2,6 @@ import { fr } from "@/i18n/fr";
 import { db } from "@/lib/db";
 import { formatDate, formatGnf } from "@/lib/format";
 import { guard } from "@/lib/guard";
-import { cinetpayBlockers, cinetpayConfigured, paymentMode } from "@/lib/payments/provider";
 
 export default async function PaymentsAdmin() {
   await guard("orders.read");
@@ -11,9 +10,8 @@ export default async function PaymentsAdmin() {
     <div>
       <h1>Paiements</h1>
       <div className="warn">
-        <p>Mode actuel : {paymentMode() === "test" ? "test. Les boutons Orange Money et Visa du parcours sont des simulations, sans débit." : "live."}</p>
-        <p>{cinetpayConfigured() ? "CinetPay peut être appelé." : cinetpayBlockers().join(" ")}</p>
-        <p>Les numéros de carte et les codes secrets ne sont ni demandés ni stockés. Un paiement n'est marqué payé qu'après vérification serveur.</p>
+        <p>Le site ne propose pas de paiement en ligne. Le client choisit le règlement hors ligne ou sur facture.</p>
+        <p>Un paiement n'est marqué payé qu'après enregistrement par une personne autorisée.</p>
       </div>
       <div className="table-wrap">
         <table>

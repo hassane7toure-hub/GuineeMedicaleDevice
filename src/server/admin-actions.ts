@@ -1,11 +1,13 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
 import { guard } from "@/lib/guard";
-import { can } from "@/lib/permissions";
+import { can, hasRole, joinRoles } from "@/lib/permissions";
+import { setSession } from "@/lib/auth";
 import { applyVerified } from "@/lib/payments/apply";
 import type { PaymentStatus } from "@/lib/payments/transitions";
 import { isPaymentStatus } from "@/lib/payments/transitions";
@@ -14,6 +16,9 @@ import { mergeSettings } from "@/lib/settings-data";
 import { fold, parseSpecs, slugify } from "@/lib/text";
 import { issueOrderProforma, issueQuoteProforma } from "@/lib/proforma";
 import { savePrivateFile, savePublicImage } from "@/lib/uploads";
+import { importProductTable } from "@/lib/product-sheet";
+import { readSpreadsheet } from "@/lib/tabular";
+import { importUserTable } from "@/lib/user-sheet";
 
 function text(formData: FormData, key: string, max = 2000) {
   return String(formData.get(key) || "").trim().slice(0, max);
@@ -226,15 +231,13 @@ export async function saveSiteSettings(formData: FormData) {
   const rateEur = text(formData, "rateEurPerGnf", 20);
   const rateUsd = text(formData, "rateUsdPerGnf", 20);
   const validRate = (value: string) => value === "" || (Number.isFinite(Number(value)) && Number(value) > 0);
-  const payments = can(user.role, "payments.configure")
-    ? {
-        offline: checked(formData, "payOffline"),
-        orangeMoney: checked(formData, "payOrange"),
-        visa: checked(formData, "payVisa"),
-        mastercard: checked(formData, "payMastercard"),
-        paycard: checked(formData, "payPaycard"),
-      }
-    : current.payments;
+  const payments = {
+    offline: can(user.role, "payments.configure") ? checked(formData, "payOffline") : current.payments.offline,
+    orangeMoney: false,
+    visa: false,
+    mastercard: false,
+    paycard: false,
+  };
   const next = mergeSettings({
     ...current,
     demoMode: checked(formData, "demoMode"),
@@ -327,15 +330,16 @@ export async function saveUser(formData: FormData) {
   const id = text(formData, "id", 40);
   const email = text(formData, "email", 160).toLowerCase();
   const name = text(formData, "name", 120);
-  const role = text(formData, "role", 20);
-  const roles = ["ADMIN", "MANAGER", "SALES", "CATALOG", "SUPPORT", "CUSTOMER"];
-  if (!email.includes("@") || name.length < 2 || !roles.includes(role)) redirect("/admin/utilisateurs?erreur=champs");
+  const selected = formData.getAll("roles").map(String);
+  const role = joinRoles(selected.length > 0 ? selected : text(formData, "role", 120).split(","));
+  if (!email.includes("@") || name.length < 2) redirect("/admin/utilisateurs?erreur=champs");
+  if (!role) redirect("/admin/utilisateurs?erreur=roles");
   const active = checked(formData, "active");
   if (id) {
     const current = await db.user.findUnique({ where: { id } });
-    if (current?.role === "ADMIN" && (role !== "ADMIN" || !active)) {
-      const admins = await db.user.count({ where: { role: "ADMIN", active: true, id: { not: id } } });
-      if (admins === 0) redirect("/admin/utilisateurs?erreur=dernier-admin");
+    if (current && hasRole(current.role, "ADMIN") && (!hasRole(role, "ADMIN") || !active)) {
+      const others = await db.user.findMany({ where: { active: true, id: { not: id } }, select: { role: true } });
+      if (!others.some((user) => hasRole(user.role, "ADMIN"))) redirect("/admin/utilisateurs?erreur=dernier-admin");
     }
   }
   const password = text(formData, "password", 200);
@@ -343,18 +347,31 @@ export async function saveUser(formData: FormData) {
   if (password && (password.length < 12 || !/[A-Za-z]/.test(password) || !/\d/.test(password))) {
     redirect("/admin/utilisateurs?erreur=mot-de-passe");
   }
+  const taken = await db.user.findUnique({ where: { email } });
+  if (taken && taken.id !== id) redirect("/admin/utilisateurs?erreur=email");
   const data = {
     email,
     name,
     role,
     active,
     phone: text(formData, "phone", 30),
-    organization: text(formData, "organization", 160),
+    ...(formData.has("organization") ? { organization: text(formData, "organization", 160) } : {}),
     ...(password ? { passwordHash: await bcrypt.hash(password, 12) } : {}),
   };
-  const saved = id
-    ? await db.user.update({ where: { id }, data })
-    : await db.user.create({ data: { ...data, passwordHash: data.passwordHash || "" } });
+  let saved;
+  try {
+    saved = id
+      ? await db.user.update({ where: { id }, data })
+      : await db.user.create({ data: { ...data, passwordHash: data.passwordHash || "" } });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      redirect("/admin/utilisateurs?erreur=email");
+    }
+    throw error;
+  }
+  if (saved.id === actor.id) {
+    await setSession({ sub: saved.id, role: saved.role, email: saved.email, name: saved.name });
+  }
   await audit({ userId: actor.id, action: "user.save", entity: "user", entityId: saved.id, meta: { role } });
   redirect("/admin/utilisateurs?ok=1");
 }
@@ -374,6 +391,51 @@ export async function deliverProforma(formData: FormData) {
     redirect(`/admin/devis/${id}?ok=1`);
   }
   redirect("/admin");
+}
+
+function importRedirect(path: string, result: { created: number; skipped: number; errors: string[] }) {
+  const params = new URLSearchParams({
+    ok: "import",
+    crees: String(result.created),
+    ignores: String(result.skipped),
+  });
+  const detail = result.errors.slice(0, 8).join(" | ").slice(0, 500);
+  if (detail) params.set("detail", detail);
+  redirect(`${path}?${params.toString()}`);
+}
+
+export async function importProducts(formData: FormData) {
+  const user = await guard("catalog.write");
+  const file = formData.get("file");
+  if (!(file instanceof File)) redirect("/admin/produits?erreur=fichier");
+  const loaded = await readSpreadsheet(file, /\.(csv|xlsx)$/);
+  if ("error" in loaded) redirect(`/admin/produits?erreur=${loaded.error}`);
+  const result = await importProductTable(db, loaded.table);
+  if (result.error) redirect(`/admin/produits?erreur=${result.error}`);
+  await audit({
+    userId: user.id,
+    action: "product.import",
+    entity: "product",
+    meta: { created: result.created, skipped: result.skipped },
+  });
+  importRedirect("/admin/produits", result);
+}
+
+export async function importUsers(formData: FormData) {
+  const user = await guard("users.write");
+  const file = formData.get("file");
+  if (!(file instanceof File)) redirect("/admin/utilisateurs?erreur=fichier");
+  const loaded = await readSpreadsheet(file, /\.(csv|xlsx)$/);
+  if ("error" in loaded) redirect(`/admin/utilisateurs?erreur=${loaded.error}`);
+  const result = await importUserTable(db, loaded.table);
+  if (result.error) redirect(`/admin/utilisateurs?erreur=${result.error}`);
+  await audit({
+    userId: user.id,
+    action: "user.import",
+    entity: "user",
+    meta: { created: result.created, skipped: result.skipped },
+  });
+  importRedirect("/admin/utilisateurs", result);
 }
 
 export async function deactivateDemoCatalog() {

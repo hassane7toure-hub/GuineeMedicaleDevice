@@ -110,7 +110,7 @@ export default async function ProformaPage({
         <p><strong>Total : {proforma.pricePending || proforma.totalGnf === null ? "À confirmer" : formatGnf(proforma.totalGnf)}</strong></p>
         {proforma.pricePending ? <p className="muted">Certaines lignes n'ont pas de prix au catalogue. L'équipe les confirmera avant un accord.</p> : null}
         {proforma.includesDemo || settings.demoMode ? <p className="warn">Des éléments de démonstration figurent sur ce document ou le site est encore en démonstration. Les montants ne constituent pas une offre contractuelle.</p> : null}
-        <p className="muted">Les conditions de livraison, de garantie et de retour sont celles publiées sur le site, sous réserve de la confirmation de l'équipe.</p>
+        <p className="muted">Les <Link href="/conditions-generales">conditions générales</Link>, la livraison, la garantie et les retours sont ceux publiés sur le site.</p>
         <p className="no-print"><PrintButton /> <Link href={back}>Retour</Link></p>
       </article>
     </section>

@@ -21,7 +21,7 @@ export default async function HomePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "Store",
-          name: settings.companyName,
+          name: settings.legalName || settings.companyName,
           description: settings.intro,
           areaServed: "GN",
           currenciesAccepted: "GNF",

@@ -41,12 +41,20 @@ export function AdminNav({ role }: { role: string }) {
 const FLASH_ERRORS: Record<string, string> = {
   acces: "Cette section n'est pas ouverte pour votre rôle.",
   champs: "Nom, référence ou slug manquant.",
+  email: "Cet e-mail est déjà utilisé par un autre compte.",
+  roles: "Choisissez au moins un rôle.",
   lien: "Marque ou catégorie introuvable.",
   nom: "Le nom est requis.",
   "photo-taille": "Photo trop lourde : 2 Mo maximum.",
   "photo-format": "Formats acceptés pour une photo : JPEG, PNG ou WebP.",
   "document-taille": "Document trop lourd : 2 Mo maximum.",
   "document-format": "Documents acceptés : PDF, JPEG, PNG ou WebP.",
+  fichier: "Choisissez un fichier CSV ou Excel.",
+  "fichier-taille": "Fichier trop lourd : 2 Mo maximum.",
+  "fichier-format": "Formats acceptés : CSV ou Excel .xlsx.",
+  "fichier-entetes": "La première ligne doit contenir les en-têtes attendus. Téléchargez le modèle.",
+  "fichier-vide": "Le fichier ne contient aucune ligne à importer.",
+  "fichier-trop": "Le fichier dépasse la limite : 500 produits ou 200 utilisateurs.",
 };
 
 export function Flash({ ok, erreur }: { ok?: string; erreur?: string }) {

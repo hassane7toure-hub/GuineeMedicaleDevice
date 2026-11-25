@@ -2,11 +2,15 @@ import type { Metadata } from "next";
 import { InfoPoster } from "@/components/info-poster";
 import { getSettings } from "@/lib/settings";
 
-export const metadata: Metadata = {
-  title: "À propos",
-  description: "Guinea Medical Device : vente, installation, maintenance et conseil en équipements médicaux en République de Guinée.",
-  alternates: { canonical: "/a-propos" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  const name = settings.legalName || settings.companyName;
+  return {
+    title: "À propos",
+    description: `${name} : vente, installation, maintenance et conseil en équipements médicaux en République de Guinée.`,
+    alternates: { canonical: "/a-propos" },
+  };
+}
 
 export default async function AboutPage() {
   const settings = await getSettings();
@@ -14,7 +18,7 @@ export default async function AboutPage() {
     <section className="section wrap">
       <header className="page-intro">
         <p className="eyebrow">{settings.country}</p>
-        <h1>{settings.companyName}</h1>
+        <h1>{settings.legalName || settings.companyName}</h1>
         <p className="lede">{settings.intro}</p>
       </header>
       <div className="grid-2">
@@ -25,8 +29,8 @@ export default async function AboutPage() {
         </article>
         <article className="card">
           <h2>Identité</h2>
-          <p>{settings.legalName}</p>
-          <p className="warn">{settings.legalNameNote}</p>
+          <p>{settings.legalName || settings.companyName}</p>
+          {settings.legalNameNote ? <p className="warn">{settings.legalNameNote}</p> : null}
           <h2>Équipe</h2>
           <p>Les noms, fonctions et portraits sont à ajouter par l'entreprise. Aucune personne n'est inventée ici.</p>
           <h2>Intervention</h2>

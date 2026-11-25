@@ -72,7 +72,7 @@ export default async function OrderPage({
                   </label>
                 ))}
               </fieldset>
-              <button className="btn-primary" type="submit">Confirmer et payer</button>
+              <button className="btn-primary" type="submit">Confirmer le règlement hors ligne</button>
             </form>
           ) : null}
           {paid ? <p className="notice">Paiement vérifié côté serveur. La commande est confirmée.</p> : null}

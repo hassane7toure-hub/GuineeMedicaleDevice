@@ -31,6 +31,14 @@ export default async function ProductPage({ params, searchParams }: Params) {
   const { erreur } = await searchParams;
   const product = await getProduct(slug);
   if (!product) notFound();
+  const named = (keys: string[], labels: Record<string, string>) => keys.map((key) => labels[key] || key).filter(Boolean);
+  const destination = [
+    named(product.audience, fr.audience).join(", "),
+    named(product.usage, fr.usage).length ? `Usage : ${named(product.usage, fr.usage).join(", ")}` : "",
+    product.usageNotes,
+  ].filter(Boolean).join(". ");
+  const needsConfirmation = product.priceGnf === null || product.availability !== "IN_STOCK";
+  const showQuote = needsConfirmation || product.allowQuote;
   const errors: Record<string, string> = {
     indisponible: "Ce produit ne peut pas être ajouté au panier. Demandez un devis.",
     stock: "La quantité demandée dépasse le stock suivi.",
@@ -71,14 +79,41 @@ export default async function ProductPage({ params, searchParams }: Params) {
         <div className="panel" style={{ padding: "1.2rem" }}>
           {product.isDemo ? <p className="warn">Fiche de démonstration. Référence, prix, stock et caractéristiques sont fictifs.</p> : null}
           <h1>{product.name}</h1>
-          <p className="meta">Réf. {product.sku} · {product.brandName}{product.brandDemo ? " (marque de démonstration)" : ""}</p>
-          <p style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}><Availability value={product.availability} /></p>
+          <p className="meta">{product.brandName}{product.brandDemo ? " (marque de démonstration)" : ""}</p>
           <p>{product.summary}</p>
           <PriceTag amount={product.priceGnf} demo={product.isDemo} />
+          <dl className="facts">
+            <div>
+              <dt>Référence</dt>
+              <dd>{product.sku}</dd>
+            </div>
+            <div>
+              <dt>Destination</dt>
+              <dd>{destination || "À confirmer"}</dd>
+            </div>
+            <div>
+              <dt>Disponibilité</dt>
+              <dd><Availability value={product.availability} /></dd>
+            </div>
+            <div>
+              <dt>Garantie</dt>
+              <dd>{product.warrantyNote || "À confirmer sur le devis."} <Link href="/garantie">Page garantie</Link></dd>
+            </div>
+            <div>
+              <dt>Accessoires inclus</dt>
+              <dd>{product.accessoriesNote || "Aucun accessoire indiqué."}</dd>
+            </div>
+            <div>
+              <dt>Besoins d'installation</dt>
+              <dd>{product.installationNotes || "À préciser sur le devis."} <Link href="/livraison">Livraison et installation</Link></dd>
+            </div>
+          </dl>
           {product.leadTimeNote ? <p className="warn">Délai indicatif, non garanti : {product.leadTimeNote}</p> : <p className="muted">Aucun délai indicatif n'est renseigné. Un délai ne devient un engagement que s'il est écrit sur le devis ou la commande.</p>}
           {product.stockQty !== null ? <p className="muted">Quantité suivie{product.isDemo ? " de démonstration" : ""} : {product.stockQty}</p> : <p className="muted">Stock non suivi pour cette fiche.</p>}
+          {needsConfirmation ? <p className="warn">Le prix ou la disponibilité doit être confirmé avant la commande.</p> : null}
           {erreur && errors[erreur] ? <p className="error" role="alert">{errors[erreur]}</p> : null}
           <div className="hero-actions">
+            {showQuote ? <Link className="btn-green" href={`/devis?produit=${product.slug}`}>Demander un devis</Link> : null}
             {product.canBuy ? (
               <form action={addToCart} style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                 <input type="hidden" name="slug" value={product.slug} />
@@ -86,21 +121,14 @@ export default async function ProductPage({ params, searchParams }: Params) {
                 <SubmitButton>Ajouter au panier</SubmitButton>
               </form>
             ) : null}
-            {product.allowQuote ? <Link className="btn-green" href={`/devis?produit=${product.slug}`}>Demander un devis</Link> : null}
             <CompareButton slug={product.slug} />
           </div>
-          <p className="muted">Garantie : {product.warrantyNote || "information à confirmer sur le devis."}</p>
-          <p><Link href="/livraison">Livraison et installation selon les zones configurées.</Link></p>
         </div>
       </div>
       <div className="grid-2" style={{ marginTop: "1rem" }}>
         <section className="panel" style={{ padding: "1rem" }}>
           <h2>Description</h2>
           <p>{product.description}</p>
-          {product.usageNotes ? <><h2>Usages</h2><p>{product.usageNotes}</p></> : null}
-          {product.installationNotes ? <><h2>Installation</h2><p>{product.installationNotes}</p></> : null}
-          {product.accessoriesNote ? <><h2>Accessoires</h2><p>{product.accessoriesNote}</p></> : null}
-          <p className="meta">Établissements : {product.audience.map((item) => fr.audience[item as keyof typeof fr.audience] || item).join(", ") || "Non précisé"}</p>
         </section>
         <section className="panel" style={{ padding: "1rem" }}>
           <h2>Caractéristiques</h2>

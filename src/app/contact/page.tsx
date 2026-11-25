@@ -4,11 +4,15 @@ import { ContactForm } from "@/components/forms";
 import { InfoPoster } from "@/components/info-poster";
 import { getSettings } from "@/lib/settings";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Contacter Guinea Medical Device pour une question commerciale ou technique.",
-  alternates: { canonical: "/contact" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  const name = settings.legalName || settings.companyName;
+  return {
+    title: "Contact",
+    description: `Contacter ${name} pour une question commerciale ou technique.`,
+    alternates: { canonical: "/contact" },
+  };
+}
 
 export default async function ContactPage({ searchParams }: { searchParams: Promise<{ sujet?: string }> }) {
   const { sujet = "" } = await searchParams;

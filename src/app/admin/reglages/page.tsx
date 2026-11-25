@@ -39,13 +39,9 @@ export default async function SettingsAdmin({ searchParams }: { searchParams: Pr
         <label className="field">Taux indicatif : 1 GNF vaut combien d'USD ?<input name="rateUsdPerGnf" defaultValue={settings.rateUsdPerGnf} /></label>
         {configurePayments ? (
           <fieldset>
-            <legend>Moyens proposés au client</legend>
-            <p className="muted">Cocher un moyen en ligne ne l'active que si le prestataire est réellement configuré. Orange Money, Visa, Mastercard et PayCard restent masqués tant que les identifiants live et la devise GNF ne sont pas en place.</p>
-            <label className="check"><input type="checkbox" name="payOffline" value="oui" defaultChecked={settings.payments.offline} />Paiement hors ligne</label>
-            <label className="check"><input type="checkbox" name="payOrange" value="oui" defaultChecked={settings.payments.orangeMoney} />Orange Money, après confirmation du prestataire</label>
-            <label className="check"><input type="checkbox" name="payVisa" value="oui" defaultChecked={settings.payments.visa} />Visa</label>
-            <label className="check"><input type="checkbox" name="payMastercard" value="oui" defaultChecked={settings.payments.mastercard} />Mastercard</label>
-            <label className="check"><input type="checkbox" name="payPaycard" value="oui" defaultChecked={settings.payments.paycard} />PayCard, si le prestataire le couvre</label>
+            <legend>Règlement proposé au client</legend>
+            <p className="muted">Le paiement en ligne n'est pas proposé. La commande est confirmée après vérification du règlement hors ligne.</p>
+            <label className="check"><input type="checkbox" name="payOffline" value="oui" defaultChecked={settings.payments.offline} />Paiement hors ligne ou sur facture</label>
           </fieldset>
         ) : <p className="muted">Les moyens de paiement se modifient avec un compte administration.</p>}
         <button className="btn-primary" type="submit">Enregistrer</button>

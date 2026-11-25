@@ -1,5 +1,7 @@
 export const STAFF_ROLES = ["ADMIN", "MANAGER", "SALES", "CATALOG", "SUPPORT"] as const;
 
+export const ROLE_ORDER = ["ADMIN", "MANAGER", "SALES", "CATALOG", "SUPPORT", "CUSTOMER"] as const;
+
 const ROLE_PERMISSIONS: Record<string, string[]> = {
   ADMIN: ["*"],
   MANAGER: [
@@ -22,13 +24,39 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
   CUSTOMER: [],
 };
 
+export function parseRoles(value: string) {
+  const found = new Set(
+    value
+      .split(/[,;|]/)
+      .map((part) => part.trim())
+      .filter((part) => part in ROLE_PERMISSIONS),
+  );
+  return ROLE_ORDER.filter((role) => found.has(role));
+}
+
+export function joinRoles(values: string[]) {
+  return parseRoles(values.join(",")).join(",");
+}
+
+export function hasRole(value: string, role: string) {
+  return parseRoles(value).includes(role as (typeof ROLE_ORDER)[number]);
+}
+
 export function can(role: string, permission: string) {
-  const granted = ROLE_PERMISSIONS[role] ?? [];
-  return granted.includes("*") || granted.includes(permission);
+  return parseRoles(role).some((item) => {
+    const granted = ROLE_PERMISSIONS[item] ?? [];
+    return granted.includes("*") || granted.includes(permission);
+  });
 }
 
 export function isStaff(role: string) {
-  return STAFF_ROLES.includes(role as (typeof STAFF_ROLES)[number]);
+  return parseRoles(role).some((item) => STAFF_ROLES.includes(item as (typeof STAFF_ROLES)[number]));
+}
+
+export function roleLabel(value: string) {
+  const roles = parseRoles(value);
+  if (roles.length === 0) return value;
+  return roles.map((role) => ROLE_LABELS[role]).join(", ");
 }
 
 export const ROLE_LABELS: Record<string, string> = {

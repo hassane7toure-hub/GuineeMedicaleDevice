@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { AdminNav } from "@/components/admin/nav";
 import { currentUser } from "@/lib/auth";
-import { isStaff } from "@/lib/permissions";
+import { isStaff, roleLabel } from "@/lib/permissions";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await currentUser();
@@ -11,7 +11,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <section className="section wrap admin-shell">
       <AdminNav role={user.role} />
       <div>
-        <p className="meta">{user.name} · {user.role}</p>
+        <p className="meta">{user.name} · {roleLabel(user.role)}</p>
         {children}
       </div>
     </section>

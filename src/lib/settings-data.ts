@@ -32,16 +32,15 @@ export type Settings = {
 
 export const defaultSettings: Settings = {
   demoMode: true,
-  companyName: "Guinea Medical Device",
-  legalName: "Guinea Medical Device Shop SARL",
-  legalNameNote:
-    "Repris de l'affiche, qui écrit « GUINEA MEDICAL DIVICE SHOP - SARL ». L'orthographe et l'immatriculation restent à confirmer sur les statuts et le registre du commerce.",
+  companyName: "GUINEA MEDICAL DEVICE SHOP - SARL",
+  legalName: "GUINEA MEDICAL DEVICE SHOP - SARL",
+  legalNameNote: "",
   tagline: "Votre partenaire de confiance en santé",
   heroTitle: "Équipements médicaux, installés et suivis.",
   heroSubtitle:
     "Vente d'équipements médicaux et de réactifs de laboratoire, installation, maintenance et conseil technique pour les établissements de santé et les professionnels en République de Guinée.",
   intro:
-    "Guinea Medical Device Shop assure la vente d'équipements médicaux, de réactifs de laboratoire et de consommables, ainsi que l'installation, la maintenance et le conseil.",
+    "GUINEA MEDICAL DEVICE SHOP - SARL assure la vente d'équipements médicaux, de réactifs de laboratoire et de consommables, ainsi que l'installation, la maintenance et le conseil.",
   phone: "+224 622 32 58 88",
   whatsapp: "+224 628 00 09 02",
   email: "guineamedshop2026@gmail.com",
@@ -72,7 +71,7 @@ export const defaultSettings: Settings = {
 
 export function mergeSettings(input: unknown): Settings {
   const source = input && typeof input === "object" ? (input as Partial<Settings>) : {};
-  const payments = source.payments ?? {};
+  const payments: Partial<Settings["payments"]> = source.payments ?? {};
   const blurbs = Array.isArray(source.serviceBlurbs) ? source.serviceBlurbs : [];
   return {
     ...defaultSettings,
@@ -80,6 +79,12 @@ export function mergeSettings(input: unknown): Settings {
     serviceBlurbs: [0, 1, 2, 3].map(
       (index) => (typeof blurbs[index] === "string" && blurbs[index].trim() ? blurbs[index] : defaultSettings.serviceBlurbs[index]),
     ) as Settings["serviceBlurbs"],
-    payments: { ...defaultSettings.payments, ...payments },
+    payments: {
+      offline: typeof payments.offline === "boolean" ? payments.offline : defaultSettings.payments.offline,
+      orangeMoney: false,
+      visa: false,
+      mastercard: false,
+      paycard: false,
+    },
   };
 }
